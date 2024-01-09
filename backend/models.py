@@ -13,11 +13,18 @@ metadata = MetaData(
 db = SQLAlchemy(metadata=metadata)
 
 
-
-
 class Duck(db.Model, SerializerMixin):
     __tablename__ = "duck_table"
     id = db.Column(db.Integer, primary_key=True)
-  
-
-
+    name = db.Column(db.String)
+    img_url = db.Column(db.String)
+    likes = db.Column(db.Integer)
+    
+    # SerializerMixin writes this for us
+    # def to_dict(self):
+    #     return {
+    #         "id": self.id,
+    #         "name": self.name,
+    #         "img_url": self.img_url,
+    #         "likes": self.likes,
+    #     }
