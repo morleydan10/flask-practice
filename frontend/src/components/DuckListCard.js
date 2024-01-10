@@ -2,6 +2,7 @@ function DuckListCard({ duck, handleClickDuck, handleDelete }) {
     
     return (
         <>
+            
             <img
                 onClick={() => handleClickDuck(duck)}
                 src={duck.img_url}

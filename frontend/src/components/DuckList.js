@@ -1,7 +1,7 @@
 import React from "react";
 import DuckListCard from "./DuckListCard";
 
-function DuckList({ ducks, handleClickDuck, handleDelete }) {
+function DuckList({ ducks, handleClickDuck, handleDelete, user }) {
     const mappedDucks = ducks.map((duck) => (
         <DuckListCard
             key={duck.id}
@@ -11,7 +11,10 @@ function DuckList({ ducks, handleClickDuck, handleDelete }) {
         />
     ));
 
-    return <div className="duck-nav">{mappedDucks}</div>;
+    return user&& <div className="duck-nav">
+        <h2>Welcome {user?.name}, here are your ducks! You have ${user.money}</h2>
+        {mappedDucks}
+        </div>;
 }
 
 export default DuckList;

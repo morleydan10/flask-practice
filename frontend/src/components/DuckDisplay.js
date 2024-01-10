@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-function DuckDisplay({featuredDuck}) {
+function DuckDisplay({featuredDuck, PORT}) {
 
   const [currentLikes, setCurrentLikes] = useState(featuredDuck.likes)
 
@@ -11,7 +11,7 @@ function DuckDisplay({featuredDuck}) {
   function handleIncrementLikes() {
     setCurrentLikes(currentLikes + 1)
 
-    fetch(`http://localhost:5555/ducks/${featuredDuck.id}`, {
+    fetch(`http://localhost:${PORT}/ducks/${featuredDuck.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -25,7 +25,7 @@ function DuckDisplay({featuredDuck}) {
 
       {/* show all the details for the featuredDuck state here */}
 
-      <h2>{featuredDuck.name}</h2>
+      <h2>{featuredDuck.name} is currently eating {featuredDuck.food ? featuredDuck.food : "nothing"}</h2>
 
       <img src={featuredDuck.img_url} alt={featuredDuck.name} />
 
