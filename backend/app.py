@@ -40,7 +40,15 @@ def get_foods():
 def get_user_by_id(id):
     user = db.session.get(User, id)
     return user.to_dict(rules=['-ducks'])
-
+@app.patch('/users/<int:id>')
+def patch_user(id):
+    user = db.session.get(User, id)
+    data = request.json
+    for key in data:
+        setattr(user, key, data[key])
+    db.session.add(user)
+    db.session.commit()
+    return user.to_dict(rules=['-ducks'])
 @app.patch("/ducks/<int:id>")
 def patch_ducks(id):
     print(id)

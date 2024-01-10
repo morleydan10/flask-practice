@@ -43,13 +43,16 @@ function App() {
                 return duck;
             })
         );
+        console.log(clickedFood)
         setFeaturedDuck({ ...featuredDuck, food: clickedFood.name });
+
         fetch(`http://localhost:${PORT}/ducks/${featuredDuck.id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ food: clickedFood.name }),
+            body: JSON.stringify({ food_id: clickedFood.id })
+    
         });
 
         setUser({ ...user, money: user.money - clickedFood.cost });
