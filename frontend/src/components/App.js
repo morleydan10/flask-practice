@@ -4,7 +4,7 @@ import DuckDisplay from "./DuckDisplay";
 import DuckForm from "./DuckForm";
 import FoodList from "./FoodList";
 
-const PORT = 3000;
+const PORT = 5555;
 function App() {
     const [user, setUser] = useState(null);
     const [foods, setFoods] = useState([]);
@@ -13,7 +13,7 @@ function App() {
     const [duckFormOpen, setDuckFormOpen] = useState(true);
 
     useEffect(() => {
-        fetch(`http://localhost:${PORT}/ducks/`)
+        fetch(`http://localhost:${PORT}/ducks`)
             .then((res) => res.json())
             .then((data) => {
                 setDucks(data);
