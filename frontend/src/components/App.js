@@ -34,25 +34,25 @@ function App() {
     function handleClickForm() {
         setDuckFormOpen(!duckFormOpen);
     }
+
     function feedDuck(clickedFood) {
         setDucks(
             ducks.map((duck) => {
                 if (duck.id === featuredDuck.id) {
-                    duck.food = clickedFood.name;
+                    duck.food_id = clickedFood.id;
                 }
                 return duck;
             })
         );
-        console.log(clickedFood)
-        setFeaturedDuck({ ...featuredDuck, food: clickedFood.name });
-
+        console.log(clickedFood);
+        setFeaturedDuck({ ...featuredDuck, food_id: clickedFood.id, food: clickedFood });
+        console.log(featuredDuck)
         fetch(`http://localhost:${PORT}/ducks/${featuredDuck.id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ food_id: clickedFood.id })
-    
+            body: JSON.stringify({ food_id: clickedFood.id }),
         });
 
         setUser({ ...user, money: user.money - clickedFood.cost });
