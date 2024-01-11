@@ -1,9 +1,12 @@
 from app import app
 from models import User, Duck, Food, db
 import json
+from flask_bcrypt import Bcrypt
+import random
 
 if __name__ == "__main__":
     with app.app_context():
+        bcrypt = Bcrypt(app)
         data = {}
         with open("db.json") as f:
             data = json.load(f)
@@ -13,7 +16,12 @@ if __name__ == "__main__":
 
         user_list = []
         for user in data["users"]:
-            u = User(name=user.get("name"), money=user.get("money"))
+            password_hash = bcrypt.generate_password_hash(user.get('name'))
+            u = User(
+                name=user.get("name"),
+                money=user.get("money"),
+                password_hash=password_hash,
+            )
             user_list.append(u)
         db.session.add_all(user_list)
         db.session.commit()
@@ -32,9 +40,9 @@ if __name__ == "__main__":
                 name=duck.get("name"),
                 likes=duck.get("likes"),
                 img_url=duck.get("img_url"),
-                user=user_list[0],
-                food=None
+                user=random.choice(user_list),
+                food=None,
             )
             db.session.add(d)
             db.session.commit()
-print("seeding complete")      
+print("seeding complete")

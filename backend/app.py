@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, make_response, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import datetime
 from models import db, Duck, User, Food
 from flask_cors import CORS
+from dotenv import dotenv_values
+from flask_bcrypt import Bcrypt
+config = dotenv_values(".env")
 
 app = Flask(__name__)
+app.secret_key = config['FLASK_SECRET_KEY']
 CORS(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.json.compact = False
-
+bcrypt = Bcrypt(app)
 migrate = Migrate(app, db)
 
 db.init_app(app)
@@ -23,7 +27,39 @@ db.init_app(app)
 def index():
     return "ducks backend"
 
+@app.get('/check_session')
+def check_session():
+    user = db.session.get(User, session.get('user_id'))
+    print(f'check session {session.get("user_id")}')
+    if user:
+        return user.to_dict(), 200
+    else:
+        return {"message": "No user logged in"}, 401
 
+@app.delete('/logout')
+def logout():
+    try:
+        session.pop('user_id')
+        return { "message": "Logged out"}, 200
+    except Exception as e:
+        print(e)
+        return { "error": "not found"}, 404
+
+
+@app.post('/login')
+def login():
+    data = request.json
+
+    user = User.query.filter(User.name == data.get('name')).first()
+
+    if user and bcrypt.check_password_hash(user.password_hash, data.get('password')):
+        session["user_id"] = user.id
+        print("success")
+        return user.to_dict(), 200
+    else:
+        return { "error": "Invalid username or password" }, 401
+    
+    
 @app.get("/ducks/")
 def get_ducks():
     # list of duck python objects
@@ -34,7 +70,7 @@ def get_ducks():
 @app.get("/foods")
 def get_foods():
     foods = Food.query.all()
-    return [f.to_dict() for f in foods], 200 
+    return [f.to_dict(rules=['-ducks']) for f in foods], 200 
 
 @app.get('/users/<int:id>')
 def get_user_by_id(id):
@@ -43,15 +79,18 @@ def get_user_by_id(id):
 @app.patch('/users/<int:id>')
 def patch_user(id):
     user = db.session.get(User, id)
-    data = request.json
-    for key in data:
-        setattr(user, key, data[key])
-    db.session.add(user)
-    db.session.commit()
+    try:
+        
+        data = request.json
+        for key in data:
+            setattr(user, key, data[key])
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        return {"error":str(e)}, 422
     return user.to_dict(rules=['-ducks'])
 @app.patch("/ducks/<int:id>")
 def patch_ducks(id):
-    print(id)
     data = request.json
     duck = db.session.get(Duck, id)
     # Setting attributes by hand. Use a loop instead
