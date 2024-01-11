@@ -7,19 +7,32 @@ import string, datetime
 
 metadata = MetaData(
     naming_convention={
+        "ix": "ix_%(column_0_label)s",
+        "uq": "uq_%(table_name)s_%(column_0_name)s",
+        "ck": "ck_%(table_name)s_%(constraint_name)s",
         "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+        "pk": "pk_%(table_name)s",
     }
 )
 db = SQLAlchemy(metadata=metadata)
+
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "user_table"
     serialize_rules = ["-ducks.user"]
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True, nullable=False)
     money = db.Column(db.Integer, default=100)
-
+    password_hash = db.Column(db.String)
     ducks = db.relationship("Duck", back_populates="user")
+
+    @validates("name")
+    def validate_name(self, key, name):
+        print(f"key {key} name {name}")
+        if not name or "z" in name.lower():
+            raise ValueError("useful message")
+        return name
+
 
 class Duck(db.Model, SerializerMixin):
     __tablename__ = "duck_table"
@@ -41,6 +54,8 @@ class Duck(db.Model, SerializerMixin):
     #         "img_url": self.img_url,
     #         "likes": self.likes,
     #     }
+
+
 class Food(db.Model, SerializerMixin):
     __tablename__ = "food_table"
     serialize_rules = ["-ducks.food"]
