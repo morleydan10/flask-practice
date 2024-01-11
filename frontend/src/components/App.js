@@ -4,7 +4,7 @@ import DuckDisplay from "./DuckDisplay";
 import DuckForm from "./DuckForm";
 import FoodList from "./FoodList";
 
-const PORT = 5555;
+const PORT = 3000;
 function App() {
     const [user, setUser] = useState(null);
     const [foods, setFoods] = useState([]);
@@ -49,7 +49,7 @@ function App() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ food: clickedFood.name }),
+            body: JSON.stringify({ food_id: clickedFood.id }),
         });
 
         setUser({ ...user, money: user.money - clickedFood.cost });

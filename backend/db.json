@@ -5,7 +5,7 @@
       "name": "Duck Shrute",
       "img_url": "https://cdn11.bigcommerce.com/s-nf2x4/images/stencil/1280x1280/products/246/9133/Computer-Geek-Rubber-Duck-Schanables-3__49617.1644583506.jpg?c=2",
       "likes": 777,
-      "food": "grape",
+      "food": "steak",
       "money": 98
     },
     {
@@ -47,7 +47,7 @@
   "users": [
     {
       "name": "user 1",
-      "money": 74,
+      "money": 14,
       "id": 1
     }
   ],

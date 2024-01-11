@@ -70,6 +70,25 @@ def patch_ducks(id):
 
     return duck.to_dict(), 201 
 
+@app.patch('/ducks/<int: id>')
+def patch_food(id):
+    data = request.json
+    duck = db.session.get(Duck, id)
+    food = setattr(duck, food, data['food'])
+
+    db.session.add()
+
+
+@app.patch('/users/<int: id>')
+def patch_money(id):
+    data = request.json
+    user = db.session.get(User, id)
+
+    for key in data:
+        setattr(user, key, data[key])
+
+    db.session.add(user)
+    db.session.commit()
 
 @app.post("/ducks")
 def post_ducks():

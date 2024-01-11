@@ -23,7 +23,7 @@ class User(db.Model, SerializerMixin):
 
 class Duck(db.Model, SerializerMixin):
     __tablename__ = "duck_table"
-    serialize_rules = ["-user.duck", "-user.food"]
+    serialize_rules = ["-user.ducks", "-food.ducks"]
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     img_url = db.Column(db.String)
